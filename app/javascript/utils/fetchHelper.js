@@ -1,7 +1,15 @@
 import axios from 'axios';
-import qs from 'qs';
+import { parse, stringify } from 'qs';
 
 import { camelize, decamelize } from './keysConverter';
+
+const axiosInstance = axios.create({
+  paramsSerializer: {
+    encode: parse,
+    serialize: stringify,
+  },
+});
+
 
 function authenticityToken() {
   const token = document.querySelector('meta[name="csrf-token"]');
@@ -17,10 +25,11 @@ function headers() {
   };
 }
 
+axios.defaults.headers.get = headers();
 axios.defaults.headers.post = headers();
 axios.defaults.headers.put = headers();
 axios.defaults.headers.delete = headers();
-axios.interceptors.response.use(null, error => {
+axios.interceptors.response.use(null, (error) => {
   if (error.response.status === 422) {
     const {
       response: { data: errors },
@@ -40,7 +49,6 @@ export default {
     return axios
       .get(url, {
         params: decamelize(params),
-        paramsSerializer: parameters => qs.stringify(parameters, { encode: false }),
       })
       .then(camelize);
   },
@@ -57,7 +65,7 @@ export default {
     return axios.put(url, body).then(camelize);
   },
 
-  delete(url, json) {
-    return axios.delete(url, body).then(camelize);
+  delete(url) {
+    return axios.delete(url).then(camelize);
   },
 };
