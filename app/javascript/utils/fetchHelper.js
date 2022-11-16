@@ -10,7 +10,6 @@ const axiosInstance = axios.create({
   },
 });
 
-
 function authenticityToken() {
   const token = document.querySelector('meta[name="csrf-token"]');
   return token ? token.content : null;
