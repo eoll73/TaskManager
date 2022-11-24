@@ -21,6 +21,7 @@
 },
 
 "rules": {
+  "no-shadow": "off",
   "prettier/prettier": [ 2 , {
     "singleQuote": true,
     "trailingComma": "all",
